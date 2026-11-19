@@ -1,15 +1,47 @@
 #!/usr/bin/env bash
 # Startet done-ban ohne Terminal-Fenster. Das Bundle liegt im Projektordner,
 # drei Ebenen ueber dieser Datei (Contents/MacOS/done-ban).
-PROJEKT="$(cd "$(dirname "$0")/../../.." && pwd)" || exit 1
-cd "$PROJEKT" || exit 1
+#
+# Protokoll: ~/Library/Logs/done-ban.log. Es liegt bewusst ausserhalb des
+# Projekts, damit es auch dann beschreibbar ist, wenn der Projektordner
+# nicht gelesen werden darf (Schreibtisch, Dokumente, iCloud).
+PROTOKOLL="$HOME/Library/Logs/done-ban.log"
+mkdir -p "$(dirname "$PROTOKOLL")" 2>/dev/null
+notiere() { echo "$(date '+%Y-%m-%d %H:%M:%S') $*" >> "$PROTOKOLL"; }
+
+notiere "--- Start über done-ban.app ---"
+notiere "Aufruf: $0"
+notiere "PATH: $PATH"
+
+PROJEKT="$(cd "$(dirname "$0")/../../.." && pwd)"
+if [ -z "$PROJEKT" ]; then
+  notiere "FEHLER: Projektordner nicht erreichbar."
+  exit 1
+fi
+notiere "Projektordner: $PROJEKT"
+
+if ! cd "$PROJEKT" 2>/dev/null; then
+  notiere "FEHLER: Wechsel in den Projektordner nicht möglich (Rechte?)."
+  exit 1
+fi
+if [ ! -x start.sh ]; then
+  notiere "FEHLER: start.sh fehlt oder ist nicht ausführbar."
+  exit 1
+fi
 
 # start.sh startet den Server im Hintergrund und kehrt zurueck, sobald er laeuft.
-if DONE_BAN_DETACH=1 ./start.sh >/dev/null 2>&1 </dev/null; then
+AUSGABE=$(DONE_BAN_DETACH=1 ./start.sh 2>&1 </dev/null)
+STATUS=$?
+notiere "start.sh beendet mit Status $STATUS"
+[ -n "$AUSGABE" ] && notiere "Ausgabe: $AUSGABE"
+
+if [ $STATUS -eq 0 ]; then
+  notiere "Erfolg, kein Terminal-Fenster nötig."
   exit 0
 fi
 
 # Ohne Terminal bliebe ein Fehler unsichtbar. Deshalb wird start.command im
 # Terminal geoeffnet: Dort laeuft derselbe Start erneut und zeigt die Meldung.
+notiere "Fehlschlag, öffne start.command im Terminal."
 open -a Terminal "$PROJEKT/start.command"
 exit 1

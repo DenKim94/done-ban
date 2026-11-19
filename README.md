@@ -38,6 +38,16 @@ Es gibt drei Startwege:
 `done-ban.app` ist kein eigenes Programm, sondern ein kleines Bündel, das `start.sh` aufruft.
 Es muss deshalb im Projektordner liegen bleiben.
 
+**Wichtig: Das Projekt darf nicht im Schreibtisch-, Dokumente- oder Download-Ordner liegen.**
+macOS schützt diese Ordner, und eine selbstgebaute App bekommt dort keinen Lesezugriff — ohne
+Nachfrage, sie wird stillschweigend abgewiesen. Der Start über die App schlägt dann mit
+`Operation not permitted` fehl und es öffnet sich ersatzweise ein Terminal-Fenster. Ein Ort wie
+`~/Projekte/DoneBan` ist unproblematisch. Über `start.command` und `start.sh` funktioniert der Start
+auch in den geschützten Ordnern, weil Terminal diese Freigabe in der Regel bereits hat.
+
+Jeder Start über die App schreibt nach `~/Library/Logs/done-ban.log`, inklusive des Grundes, falls
+er fehlschlägt. Die Ausgabe des Servers selbst steht in `start.log` im Projektordner.
+
 ### Erster Start unter macOS
 
 Lädt man das Projekt aus dem Internet herunter, blockiert Gatekeeper die Skripte beim ersten Mal.
