@@ -1,0 +1,11 @@
+node_modules/
+todos.db
+todos.db-journal
+.DS_Store
+
+# Spezifikationsdokumente bleiben lokal
+UMSETZUNG.md
+DESIGN.md
+
+# Werkzeug-Ordner
+.claude/

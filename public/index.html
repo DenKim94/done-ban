@@ -1,0 +1,123 @@
+<!doctype html>
+<!-- index.html: Grundgeruest von done-ban (Kopfzeile, Board, Dialoge). -->
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>done-ban</title>
+  <link rel="icon" href="icon.png" type="image/png">
+  <link rel="apple-touch-icon" href="icon.png">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="app">
+  <header class="header">
+    <p class="wordmark">
+      <span data-icon="check"></span>
+      <span><span class="wordmark__done">done</span>-ban</span>
+    </p>
+    <div class="header__actions">
+      <button class="btn btn--secondary" type="button" id="archive-button" aria-label="Archiv">
+        <span data-icon="archive"></span>
+        <span class="btn__label">Archiv</span>
+        <span class="badge badge--neutral" id="archive-count">0</span>
+      </button>
+      <button class="btn btn--primary" type="button" id="new-button" aria-label="Neues To-Do">
+        <span data-icon="plus"></span>
+        <span class="btn__label">Neues To-Do</span>
+      </button>
+    </div>
+  </header>
+
+  <div class="banner" id="connection-banner" role="alert" hidden>
+    <span data-icon="warning"></span>
+    <span>Keine Verbindung zum Server. Wurde das Terminal-Fenster geschlossen? Dann start.sh erneut ausführen.</span>
+  </div>
+
+  <nav class="tabs" id="status-tabs" role="tablist" aria-label="Status"></nav>
+
+  <div class="tagbar" id="tagbar" hidden>
+    <span class="tagbar__label" id="tagbar-label">Tags</span>
+    <div class="tagbar__list" id="tagbar-list"></div>
+  </div>
+
+  <main class="board" id="board"></main>
+
+  <!-- Dialog zum Anlegen und Bearbeiten -->
+  <dialog class="dialog" id="todo-dialog" aria-labelledby="todo-dialog-title">
+    <form class="dialog__form" id="todo-form" novalidate>
+      <header class="dialog__head">
+        <h2 class="dialog__title" id="todo-dialog-title">Neues To-Do</h2>
+      </header>
+      <div class="dialog__body">
+        <div class="field">
+          <label class="field__label" for="field-title">Titel</label>
+          <input class="input" id="field-title" name="title" type="text" required maxlength="120">
+        </div>
+        <div class="field">
+          <label class="field__label" for="field-description">Beschreibung</label>
+          <textarea class="input input--area" id="field-description" name="description" required maxlength="1000"></textarea>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label class="field__label" for="field-due-date">Zieldatum</label>
+            <input class="input" id="field-due-date" name="dueDate" type="date" required>
+          </div>
+          <div class="field">
+            <label class="field__label" for="field-status">Status</label>
+            <select class="input" id="field-status" name="status"></select>
+          </div>
+        </div>
+        <div class="field">
+          <label class="field__label" for="field-tag">Tag</label>
+          <input class="input" id="field-tag" name="tag" type="text" maxlength="33" placeholder="#Arbeit">
+          <p class="field__hint">optional, ein Schlagwort, zum Beispiel #Arbeit oder #ProjektXY</p>
+        </div>
+        <div class="field">
+          <label class="field__label" for="field-links">Links</label>
+          <textarea class="input input--area input--area-sm" id="field-links" name="links"></textarea>
+          <p class="field__hint">optional, einer pro Zeile</p>
+        </div>
+        <p class="form-error" id="todo-error" role="alert" hidden>
+          <span data-icon="warning"></span>
+          <span id="todo-error-text"></span>
+        </p>
+      </div>
+      <footer class="dialog__foot">
+        <button class="btn btn--secondary" type="button" id="todo-cancel">Abbrechen</button>
+        <button class="btn btn--primary" type="submit">Speichern</button>
+      </footer>
+    </form>
+  </dialog>
+
+  <!-- Archivansicht -->
+  <dialog class="dialog" id="archive-dialog" aria-labelledby="archive-dialog-title">
+    <header class="dialog__head">
+      <h2 class="dialog__title" id="archive-dialog-title">Archiv</h2>
+    </header>
+    <div class="dialog__body" id="archive-body"></div>
+    <footer class="dialog__foot dialog__foot--split">
+      <button class="btn btn--danger" type="button" id="archive-clear">Archiv leeren</button>
+      <button class="btn btn--secondary" type="button" id="archive-close">Schließen</button>
+    </footer>
+  </dialog>
+
+  <!-- Sicherheitsabfrage im Design der Anwendung -->
+  <dialog class="dialog dialog--narrow" id="confirm-dialog" aria-labelledby="confirm-title">
+    <header class="dialog__head">
+      <h2 class="dialog__title" id="confirm-title">Löschen bestätigen</h2>
+    </header>
+    <div class="dialog__body">
+      <p class="confirm__question" id="confirm-question"></p>
+      <p class="confirm__subject" id="confirm-subject"></p>
+      <p class="confirm__hint" id="confirm-hint"></p>
+    </div>
+    <footer class="dialog__foot">
+      <button class="btn btn--secondary" type="button" id="confirm-cancel">Abbrechen</button>
+      <button class="btn btn--danger" type="button" id="confirm-ok">Löschen</button>
+    </footer>
+  </dialog>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>

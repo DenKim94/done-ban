@@ -1,0 +1,18 @@
+{
+  "name": "done-ban",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Lokales Kanban-Board fuer To-Dos",
+  "type": "module",
+  "engines": {
+    "node": ">=26"
+  },
+  "scripts": {
+    "prestart": "bash scripts/ensure-deps.sh",
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "better-sqlite3": "^13.2.0",
+    "express": "^5.3.0"
+  }
+}
