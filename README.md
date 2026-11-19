@@ -92,7 +92,7 @@ Alle Einstellungen laufen über Umgebungsvariablen:
 | Variable | Standard | Zweck |
 |---|---|---|
 | `PORT` | `3003` | HTTP-Port |
-| `TODO_DB` | `<Projektordner>/todos.db` | Pfad zur Datenbankdatei |
+| `TODO_DB` | `<Projektordner>/database/todos.db` | Pfad zur Datenbankdatei |
 | `SHUTDOWN_GRACE_MS` | `5000` | Wartezeit nach dem Schließen des letzten Tabs |
 | `STARTUP_TIMEOUT_MS` | `60000` | Wartezeit auf die erste Browser-Verbindung |
 | `NO_OPEN` | – | `1` = Browser nicht automatisch öffnen |
@@ -107,11 +107,13 @@ Der Server lauscht ausschließlich auf `127.0.0.1` und ist damit aus dem Netzwer
 
 ## Datensicherung und Zurücksetzen
 
-- **Backup:** Den Server beenden und `todos.db` kopieren. Das ist eine gewöhnliche SQLite-Datei.
+- **Backup:** Den Server beenden und `database/todos.db` kopieren. Das ist eine gewöhnliche SQLite-Datei.
 - **Einzelne Einträge löschen:** Papierkorb-Button auf der Karte. Der Eintrag wird nach der
   Sicherheitsabfrage sofort und endgültig aus der Datenbank entfernt.
-- **Zurücksetzen:** Den Server beenden und `todos.db` löschen. Beim nächsten Start wird eine leere
-  Datenbank angelegt. Dieser Schritt löscht alle To-Dos, auch das Archiv.
+- **Zurücksetzen:** Den Server beenden und `database/todos.db` löschen. Beim nächsten Start wird eine
+  leere Datenbank angelegt. Dieser Schritt löscht alle To-Dos, auch das Archiv.
+- **Umzug einer älteren Datenbank:** Bis Version 1.0 lag die Datei direkt im Projektordner. Liegt dort
+  noch eine `todos.db`, einfach nach `database/todos.db` verschieben, dann sind alle Einträge wieder da.
 - **Ältere Datenbank:** Fehlen die Spalten `title` und `tag`, ergänzt der Server sie beim Start.
   Bestehende Einträge bekommen als Titel die erste Zeile ihrer Beschreibung. Vorhandene Daten
   bleiben dabei erhalten.
@@ -128,7 +130,8 @@ done-ban/
 ├── scripts/
 │   └── ensure-deps.sh  # prüft und installiert Abhängigkeiten
 ├── public/             # Oberfläche (index.html, style.css, app.js, icon.png)
-└── todos.db            # wird beim ersten Start erzeugt
+└── database/           # wird beim ersten Start angelegt
+    └── todos.db        # die SQLite-Datei mit allen To-Dos
 ```
 
 ## Fehlersuche

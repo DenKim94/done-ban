@@ -1,6 +1,7 @@
 // server.js: HTTP-Server, REST-API und Lebenszyklus (SSE, Shutdown, Browser oeffnen) fuer done-ban.
 
 import { spawn } from 'node:child_process';
+import { mkdirSync } from 'node:fs';
 import http from 'node:http';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -13,13 +14,17 @@ const APP_ID = 'done-ban';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const PUBLIC_DIR = path.join(HERE, 'public');
-const DB_FILE = process.env.TODO_DB || path.join(HERE, 'todos.db');
+const DB_DIR = path.join(HERE, 'database');
+const DB_FILE = process.env.TODO_DB || path.join(DB_DIR, 'todos.db');
 
 const PORT = Number(process.env.PORT || 3003);
 const HOST = '127.0.0.1';
 const SHUTDOWN_GRACE_MS = Number(process.env.SHUTDOWN_GRACE_MS || 5000);
 const STARTUP_TIMEOUT_MS = Number(process.env.STARTUP_TIMEOUT_MS || 60000);
 const PING_INTERVAL_MS = 20000;
+
+// Der Ordner der Datenbankdatei wird beim Start angelegt, falls er fehlt.
+if (DB_FILE !== ':memory:') mkdirSync(path.dirname(DB_FILE), { recursive: true });
 
 const repo = openDatabase(DB_FILE);
 
