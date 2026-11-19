@@ -27,6 +27,17 @@ Der Browser öffnet sich automatisch unter `http://localhost:3003`.
 Wird der letzte Tab geschlossen, beendet sich der Server nach etwa fünf Sekunden von selbst.
 Ein Neuladen der Seite (F5) beendet ihn nicht.
 
+Die beiden Startwege unterscheiden sich:
+
+| Weg | Verhalten |
+|---|---|
+| Doppelklick auf `start.command` | Der Server läuft im Hintergrund weiter, das Terminal-Fenster schließt sich nach dem erfolgreichen Start von selbst. Die Serverausgabe landet in `start.log`. Bei einem Fehler bleibt das Fenster offen und zeigt die Meldung. |
+| `./start.sh` im Terminal | Der Server läuft im Vordergrund, die Ausgabe erscheint direkt im Fenster, `Strg+C` beendet ihn. |
+
+Beim ersten Doppelklick fragt macOS einmalig, ob `Terminal` gesteuert werden darf. Diese Rückfrage
+gehört zum automatischen Schließen des Fensters. Wird sie abgelehnt, bleibt das Fenster offen und
+kann von Hand geschlossen werden; der Server läuft trotzdem.
+
 ### Erster Start unter macOS
 
 Lädt man das Projekt aus dem Internet herunter, blockiert Gatekeeper die Skripte beim ersten Mal.
@@ -50,8 +61,8 @@ Danach startet die App auch ohne Netzverbindung und ohne spürbare Verzögerung.
 Wichtig: Ein direkter Aufruf von `node server.js` prüft die Abhängigkeiten **nicht**.
 Dafür `npm start` oder `./start.sh` verwenden.
 
-Soll das Terminal-Fenster nach dem Beenden automatisch verschwinden, lässt sich das in den
-Terminal-Einstellungen unter "Profile" > "Shell" > "Wenn die Shell beendet wurde" einstellen.
+Der Hintergrundserver hängt nicht mehr am Terminal: Das Schließen des Fensters beendet ihn nicht.
+Beendet wird er wie gewohnt dadurch, dass der letzte Browser-Tab geschlossen wird.
 
 ## Bedienung
 
@@ -130,6 +141,7 @@ done-ban/
 ├── scripts/
 │   └── ensure-deps.sh  # prüft und installiert Abhängigkeiten
 ├── public/             # Oberfläche (index.html, style.css, app.js, icon.png)
+├── start.log           # Serverausgabe beim Start per Doppelklick
 └── database/           # wird beim ersten Start angelegt
     └── todos.db        # die SQLite-Datei mit allen To-Dos
 ```

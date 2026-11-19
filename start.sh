@@ -1,8 +1,11 @@
 #!/usr/bin/env bash
 # Startet done-ban: prueft Node, installiert fehlende Abhaengigkeiten und startet den Server.
+# Mit DONE_BAN_DETACH=1 laeuft der Server im Hintergrund weiter und das Skript kehrt zurueck,
+# sobald der Start geglueckt ist. Diesen Weg nutzt start.command fuer den Doppelklick.
 cd "$(dirname "$0")"
 
 REQUIRED_MAJOR=26
+LOG_FILE="start.log"
 
 fail() {
   echo "$1" >&2
@@ -48,6 +51,30 @@ fi
 
 if ! bash scripts/ensure-deps.sh; then
   fail "Fehler: Die Vorbereitung ist fehlgeschlagen. done-ban wurde nicht gestartet."
+fi
+
+# Hintergrundstart: Der Server wird vom Terminal geloest, die Ausgabe landet im Logfile.
+if [ "${DONE_BAN_DETACH:-}" = "1" ]; then
+  : > "$LOG_FILE"
+  DONE_BAN_DETACHED=1 nohup node server.js >> "$LOG_FILE" 2>&1 </dev/null &
+  SERVER_PID=$!
+  disown "$SERVER_PID" 2>/dev/null || true
+
+  # Bis zu 30 s auf die Startmeldung des Servers warten.
+  for _ in $(seq 1 150); do
+    if grep -q "läuft auf\|läuft bereits" "$LOG_FILE" 2>/dev/null; then
+      echo "done-ban läuft im Hintergrund. Serverausgabe: $LOG_FILE"
+      exit 0
+    fi
+    if ! kill -0 "$SERVER_PID" 2>/dev/null; then
+      break
+    fi
+    sleep 0.2
+  done
+
+  echo "Fehler: done-ban konnte nicht gestartet werden." >&2
+  [ -s "$LOG_FILE" ] && cat "$LOG_FILE" >&2
+  fail "Bitte die Meldung oben prüfen."
 fi
 
 node server.js

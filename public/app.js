@@ -704,7 +704,7 @@ function renderArchive(entries) {
     description.textContent = entry.tag ? `${entry.title} · #${entry.tag}` : entry.title;
     const meta = document.createElement('p');
     meta.className = 'archive-item__meta';
-    meta.textContent = `Ziel: ${formatDate(entry.dueDate)} · Archiviert: ${formatTimestamp(entry.archivedAt)}`;
+    meta.textContent = `Zieldatum: ${formatDate(entry.dueDate)} · Archiviert: ${formatTimestamp(entry.archivedAt)}`;
     item.append(description, meta);
     list.append(item);
   }

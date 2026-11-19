@@ -282,5 +282,12 @@ function shutdown(reason) {
 }
 
 for (const signal of ['SIGINT', 'SIGTERM', 'SIGHUP']) {
+  // Beim Hintergrundstart ueber start.command wird SIGHUP bewusst ignoriert:
+  // Das Schliessen des Terminal-Fensters darf den Server nicht beenden.
+  // Der leere Handler verhindert die Standardwirkung des Signals.
+  if (signal === 'SIGHUP' && process.env.DONE_BAN_DETACHED === '1') {
+    process.on('SIGHUP', () => {});
+    continue;
+  }
   process.on(signal, () => shutdown(`Signal ${signal} empfangen.`));
 }
