@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+# Startet done-ban ohne Terminal-Fenster. Das Bundle liegt im Projektordner,
+# drei Ebenen ueber dieser Datei (Contents/MacOS/done-ban).
+PROJEKT="$(cd "$(dirname "$0")/../../.." && pwd)" || exit 1
+cd "$PROJEKT" || exit 1
+
+# start.sh startet den Server im Hintergrund und kehrt zurueck, sobald er laeuft.
+if DONE_BAN_DETACH=1 ./start.sh >/dev/null 2>&1 </dev/null; then
+  exit 0
+fi
+
+# Ohne Terminal bliebe ein Fehler unsichtbar. Deshalb wird start.command im
+# Terminal geoeffnet: Dort laeuft derselbe Start erneut und zeigt die Meldung.
+open -a Terminal "$PROJEKT/start.command"
+exit 1

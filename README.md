@@ -21,30 +21,31 @@ Zieldatum sortieren. Erledigte Karten können archiviert werden.
 
 ## Start
 
-Doppelklick auf **`start.command`** (macOS). Im Terminal geht auch `./start.sh`.
+Doppelklick auf **`done-ban.app`** (macOS). Es öffnet sich kein Terminal-Fenster,
+der Browser zeigt die App unter `http://localhost:3003`.
 
-Der Browser öffnet sich automatisch unter `http://localhost:3003`.
 Wird der letzte Tab geschlossen, beendet sich der Server nach etwa fünf Sekunden von selbst.
 Ein Neuladen der Seite (F5) beendet ihn nicht.
 
-Die beiden Startwege unterscheiden sich:
+Es gibt drei Startwege:
 
 | Weg | Verhalten |
 |---|---|
-| Doppelklick auf `start.command` | Der Server läuft im Hintergrund weiter, das Terminal-Fenster schließt sich nach dem erfolgreichen Start von selbst. Die Serverausgabe landet in `start.log`. Bei einem Fehler bleibt das Fenster offen und zeigt die Meldung. |
-| `./start.sh` im Terminal | Der Server läuft im Vordergrund, die Ausgabe erscheint direkt im Fenster, `Strg+C` beendet ihn. |
+| Doppelklick auf `done-ban.app` | Kein Fenster. Der Server läuft im Hintergrund, die Ausgabe landet in `start.log`. Schlägt der Start fehl, öffnet sich ein Terminal-Fenster mit der Meldung. |
+| Doppelklick auf `start.command` | Terminal-Fenster bleibt offen, der Server läuft darin im Vordergrund. Das Fenster zu schließen beendet auch den Server. |
+| `./start.sh` im Terminal | Wie `start.command`, nur von Hand gestartet. `Strg+C` beendet den Server. |
 
-Beim ersten Doppelklick fragt macOS einmalig, ob `Terminal` gesteuert werden darf. Diese Rückfrage
-gehört zum automatischen Schließen des Fensters. Wird sie abgelehnt, bleibt das Fenster offen und
-kann von Hand geschlossen werden; der Server läuft trotzdem.
+`done-ban.app` ist kein eigenes Programm, sondern ein kleines Bündel, das `start.sh` aufruft.
+Es muss deshalb im Projektordner liegen bleiben.
 
 ### Erster Start unter macOS
 
 Lädt man das Projekt aus dem Internet herunter, blockiert Gatekeeper die Skripte beim ersten Mal.
 Zwei Wege führen daran vorbei:
 
-- Rechtsklick auf `start.command`, dann **"Öffnen"** wählen und die Rückfrage bestätigen, oder
-- im Terminal: `xattr -d com.apple.quarantine start.command start.sh scripts/ensure-deps.sh`
+- Rechtsklick auf `done-ban.app` bzw. `start.command`, dann **"Öffnen"** wählen und die Rückfrage
+  bestätigen, oder
+- im Terminal: `xattr -dr com.apple.quarantine done-ban.app start.command start.sh scripts/ensure-deps.sh`
 
 Fehlen die Ausführungsrechte, hilft:
 
@@ -61,8 +62,8 @@ Danach startet die App auch ohne Netzverbindung und ohne spürbare Verzögerung.
 Wichtig: Ein direkter Aufruf von `node server.js` prüft die Abhängigkeiten **nicht**.
 Dafür `npm start` oder `./start.sh` verwenden.
 
-Der Hintergrundserver hängt nicht mehr am Terminal: Das Schließen des Fensters beendet ihn nicht.
-Beendet wird er wie gewohnt dadurch, dass der letzte Browser-Tab geschlossen wird.
+Beim Start über `done-ban.app` hängt der Server nicht am Terminal. Beendet wird er dadurch, dass der
+letzte Browser-Tab geschlossen wird, oder von Hand mit `pkill -f "node server.js"`.
 
 ## Bedienung
 
@@ -137,7 +138,8 @@ done-ban/
 ├── db.js               # Schema, Sortierlogik, Datenbankzugriff
 ├── validation.js       # Prüfung der Eingaben
 ├── start.sh            # Startskript
-├── start.command       # macOS-Wrapper für den Doppelklick
+├── start.command       # macOS-Wrapper für den Doppelklick im Terminal
+├── done-ban.app/       # Start ohne Terminal-Fenster
 ├── scripts/
 │   └── ensure-deps.sh  # prüft und installiert Abhängigkeiten
 ├── public/             # Oberfläche (index.html, style.css, app.js, icon.png)
