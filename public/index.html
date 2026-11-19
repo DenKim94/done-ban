@@ -58,12 +58,13 @@
           <label class="field__label" for="field-description">Beschreibung</label>
           <textarea class="input input--area" id="field-description" name="description" required maxlength="1000"></textarea>
         </div>
-        <div class="field-row">
+        <div class="field-row" id="field-row-date">
           <div class="field">
             <label class="field__label" for="field-due-date">Zieldatum</label>
             <input class="input" id="field-due-date" name="dueDate" type="date" required>
           </div>
-          <div class="field">
+          <!-- Nur beim Bearbeiten sichtbar: Neue To-Dos starten immer in Offen. -->
+          <div class="field" id="field-status-wrapper">
             <label class="field__label" for="field-status">Status</label>
             <select class="input" id="field-status" name="status"></select>
           </div>

@@ -83,7 +83,7 @@ letzte Browser-Tab geschlossen wird, oder von Hand mit `pkill -f "node server.js
 |---|---|
 | To-Do anlegen | Button "Neues To-Do" in der Kopfzeile |
 | To-Do bearbeiten | Button "Bearbeiten" auf der Karte oder Doppelklick auf die Karte |
-| Status ändern | Karte in eine andere Spalte ziehen oder das Feld "Status" im Dialog verwenden |
+| Status ändern | Karte in eine andere Spalte ziehen oder das Feld "Status" im Bearbeiten-Dialog verwenden. Auf schmalen Bildschirmen und per Tastatur ist der Dialog der Weg dorthin. |
 | Reihenfolge ändern | Karte innerhalb der Spalte an die gewünschte Stelle ziehen |
 | Spalte sortieren | Button im Spaltenkopf. Jeder Klick wechselt die Richtung: "Neueste zuerst" sortiert absteigend, "Älteste zuerst" aufsteigend. Die Beschriftung nennt immer die Reihenfolge, die der nächste Klick herstellt. |
 | Nach Tag filtern | Klick auf einen Tag in der Leiste unter der Kopfzeile. Nur passende Karten bleiben sichtbar, die Zähler zeigen die gefilterte Anzahl. Ein Klick auf "Alle" oder erneut auf den aktiven Tag hebt den Filter auf. |
@@ -100,7 +100,7 @@ letzte Browser-Tab geschlossen wird, oder von Hand mit `pkill -f "node server.js
 | Titel | ja | Höchstens 120 Zeichen. Nur der Titel steht auf der Karte. |
 | Beschreibung | ja | Höchstens 1000 Zeichen, Zeilenumbrüche bleiben erhalten. Sichtbar im Bearbeiten-Dialog, als Tooltip der Karte und in der Detailansicht archivierter Einträge. |
 | Zieldatum | ja | Bestimmt die Einsortierung und die Hervorhebung überfälliger Einträge. |
-| Status | nein | Standard ist Offen. |
+| Status | – | Neue To-Dos landen immer in Offen, beim Anlegen gibt es deshalb keine Auswahl. Ändern per Drag-and-Drop oder über das Status-Feld im Bearbeiten-Dialog. |
 | Tag | nein | Ein einzelnes Schlagwort, zum Beispiel `#Arbeit` oder `#ProjektXY`. Die Raute ist optional, gespeichert wird ohne sie. Erlaubt sind Buchstaben, Ziffern, Bindestrich und Unterstrich, höchstens 32 Zeichen. |
 | Links | nein | Bis zu 20 Stück, `http` oder `https`, einer pro Zeile. |
 

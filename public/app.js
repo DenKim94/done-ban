@@ -163,6 +163,8 @@ const elements = {
   tag: document.getElementById('field-tag'),
   dueDate: document.getElementById('field-due-date'),
   status: document.getElementById('field-status'),
+  statusWrapper: document.getElementById('field-status-wrapper'),
+  dateRow: document.getElementById('field-row-date'),
   links: document.getElementById('field-links'),
   archiveDialog: document.getElementById('archive-dialog'),
   archiveTitle: document.getElementById('archive-dialog-title'),
@@ -627,6 +629,11 @@ function openTodoDialog(id = null) {
   editingId = id;
   const todo = id === null ? null : todosById.get(id);
   elements.todoTitle.textContent = todo ? 'To-Do bearbeiten' : 'Neues To-Do';
+  // Neue To-Dos starten immer in Offen, deshalb entfaellt die Auswahl hier.
+  // Beim Bearbeiten bleibt sie: Per Tastatur und auf schmalen Bildschirmen
+  // ist sie der einzige Weg, den Status zu aendern.
+  elements.statusWrapper.hidden = !todo;
+  elements.dateRow.classList.toggle('field-row--single', !todo);
   elements.title.value = todo ? todo.title : '';
   elements.tag.value = todo && todo.tag ? `#${todo.tag}` : '';
   elements.description.value = todo ? todo.description : '';
@@ -659,9 +666,10 @@ async function submitTodo(event) {
     links: elements.links.value
       .split('\n')
       .map((line) => line.trim())
-      .filter((line) => line !== ''),
-    status: elements.status.value
+      .filter((line) => line !== '')
   };
+  // Ohne Angabe legt der Server das To-Do in Offen an.
+  if (editingId !== null) payload.status = elements.status.value;
   try {
     if (editingId === null) await api('/api/todos', 'POST', payload);
     else await api(`/api/todos/${editingId}`, 'PUT', payload);

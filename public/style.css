@@ -355,6 +355,8 @@ dialog.dialog:not([open]) { display: none; }
 /* ---------- ab 480px ---------- */
 @media (min-width: 480px) {
   .field-row { grid-template-columns: 1fr 1fr; }
+  /* Ohne Statusfeld nutzt das Zieldatum die ganze Breite. */
+  .field-row--single { grid-template-columns: 1fr; }
 }
 
 /* ---------- ab 768px (Mittel) ---------- */
