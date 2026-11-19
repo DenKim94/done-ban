@@ -339,7 +339,7 @@ function createCard(todo) {
   const date = document.createElement('span');
   date.className = 'card__date';
   date.append(createIcon(overdue ? 'warning' : 'calendar'));
-  date.append(document.createTextNode(`Ziel: ${formatDate(todo.dueDate)}`));
+  date.append(document.createTextNode(`Zieldatum: ${formatDate(todo.dueDate)}`));
   if (overdue) {
     const hint = document.createElement('span');
     hint.className = 'sr-only';
