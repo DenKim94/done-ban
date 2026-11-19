@@ -89,7 +89,8 @@ letzte Browser-Tab geschlossen wird, oder von Hand mit `pkill -f "node server.js
 | Nach Tag filtern | Klick auf einen Tag in der Leiste unter der Kopfzeile. Nur passende Karten bleiben sichtbar, die Zähler zeigen die gefilterte Anzahl. Ein Klick auf "Alle" oder erneut auf den aktiven Tag hebt den Filter auf. |
 | Archivieren | Button "Archivieren" auf einer Karte in der Spalte Done |
 | To-Do löschen | Papierkorb-Button auf der Karte, mit Sicherheitsabfrage. Das löscht den Eintrag endgültig. |
-| Archiv ansehen | Button "Archiv" in der Kopfzeile |
+| Archiv ansehen | Button "Archiv" in der Kopfzeile. Die archivierten Einträge erscheinen als Karten, neueste zuerst. |
+| Archivierten Eintrag im Detail | Klick auf die Karte im Archiv. Die Detailansicht zeigt die vollständige Beschreibung mit Zeilenumbrüchen, den Tag, die Links sowie Zieldatum und Archivierungszeitpunkt. |
 | Archiv leeren | Im Archiv-Dialog links unten, mit Sicherheitsabfrage |
 
 ### Felder eines To-Dos
@@ -97,7 +98,7 @@ letzte Browser-Tab geschlossen wird, oder von Hand mit `pkill -f "node server.js
 | Feld | Pflicht | Hinweise |
 |---|---|---|
 | Titel | ja | Höchstens 120 Zeichen. Nur der Titel steht auf der Karte. |
-| Beschreibung | ja | Höchstens 1000 Zeichen, Zeilenumbrüche bleiben erhalten. Sichtbar im Bearbeiten-Dialog und als Tooltip der Karte. |
+| Beschreibung | ja | Höchstens 1000 Zeichen, Zeilenumbrüche bleiben erhalten. Sichtbar im Bearbeiten-Dialog, als Tooltip der Karte und in der Detailansicht archivierter Einträge. |
 | Zieldatum | ja | Bestimmt die Einsortierung und die Hervorhebung überfälliger Einträge. |
 | Status | nein | Standard ist Offen. |
 | Tag | nein | Ein einzelnes Schlagwort, zum Beispiel `#Arbeit` oder `#ProjektXY`. Die Raute ist optional, gespeichert wird ohne sie. Erlaubt sind Buchstaben, Ziffern, Bindestrich und Unterstrich, höchstens 32 Zeichen. |

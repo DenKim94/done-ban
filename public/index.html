@@ -102,6 +102,22 @@
     </footer>
   </dialog>
 
+  <!-- Detailansicht eines archivierten To-Dos -->
+  <dialog class="dialog dialog--narrow" id="detail-dialog" aria-labelledby="detail-title">
+    <header class="dialog__head">
+      <h2 class="dialog__title" id="detail-title"></h2>
+    </header>
+    <div class="dialog__body">
+      <span class="card__tag" id="detail-tag" hidden></span>
+      <p class="detail__description" id="detail-description"></p>
+      <ul class="card__links" id="detail-links"></ul>
+      <dl class="detail__meta" id="detail-meta"></dl>
+    </div>
+    <footer class="dialog__foot">
+      <button class="btn btn--secondary" type="button" id="detail-close">Schließen</button>
+    </footer>
+  </dialog>
+
   <!-- Sicherheitsabfrage im Design der Anwendung -->
   <dialog class="dialog dialog--narrow" id="confirm-dialog" aria-labelledby="confirm-title">
     <header class="dialog__head">

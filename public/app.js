@@ -169,6 +169,13 @@ const elements = {
   archiveBody: document.getElementById('archive-body'),
   archiveClear: document.getElementById('archive-clear'),
   archiveClose: document.getElementById('archive-close'),
+  detailDialog: document.getElementById('detail-dialog'),
+  detailTitle: document.getElementById('detail-title'),
+  detailTag: document.getElementById('detail-tag'),
+  detailDescription: document.getElementById('detail-description'),
+  detailLinks: document.getElementById('detail-links'),
+  detailMeta: document.getElementById('detail-meta'),
+  detailClose: document.getElementById('detail-close'),
   tagbar: document.getElementById('tagbar'),
   tagbarList: document.getElementById('tagbar-list'),
   confirmDialog: document.getElementById('confirm-dialog'),
@@ -693,22 +700,93 @@ function renderArchive(entries) {
     elements.archiveBody.replaceChildren(empty);
     return;
   }
-  const list = document.createElement('ul');
-  list.className = 'archive-list';
-  for (const entry of entries) {
-    const item = document.createElement('li');
-    item.className = 'archive-item';
-    const description = document.createElement('p');
-    description.className = 'archive-item__desc';
-    description.title = entry.description || entry.title;
-    description.textContent = entry.tag ? `${entry.title} · #${entry.tag}` : entry.title;
-    const meta = document.createElement('p');
-    meta.className = 'archive-item__meta';
-    meta.textContent = `Zieldatum: ${formatDate(entry.dueDate)} · Archiviert: ${formatTimestamp(entry.archivedAt)}`;
-    item.append(description, meta);
-    list.append(item);
+  elements.archiveBody.replaceChildren(...entries.map(createArchiveCard));
+}
+
+/** Baut eine anklickbare Karte fuer einen archivierten Eintrag. */
+function createArchiveCard(entry) {
+  const card = document.createElement('button');
+  card.type = 'button';
+  card.className = 'card card--archive';
+  card.dataset.id = String(entry.id);
+  card.setAttribute('aria-label', `${entry.title} – Details anzeigen`);
+
+  const title = document.createElement('p');
+  title.className = 'card__desc';
+  title.append(createIcon('check'), document.createTextNode(entry.title));
+  card.append(title);
+
+  if (entry.tag) {
+    const tag = document.createElement('span');
+    tag.className = 'card__tag';
+    tag.textContent = `#${entry.tag}`;
+    card.append(tag);
   }
-  elements.archiveBody.replaceChildren(list);
+
+  const footer = document.createElement('div');
+  footer.className = 'card__footer';
+  const due = document.createElement('span');
+  due.className = 'card__date';
+  due.append(createIcon('calendar'), document.createTextNode(`Zieldatum: ${formatDate(entry.dueDate)}`));
+  const archived = document.createElement('span');
+  archived.className = 'card__date';
+  archived.append(
+    createIcon('archive'),
+    document.createTextNode(`Archiviert: ${formatTimestamp(entry.archivedAt)}`)
+  );
+  footer.append(due, archived);
+  card.append(footer);
+
+  card.addEventListener('click', () => openDetail(entry));
+  return card;
+}
+
+/** Zeigt einen archivierten Eintrag mit seiner vollen Beschreibung. */
+function openDetail(entry) {
+  elements.detailTitle.textContent = entry.title;
+
+  elements.detailTag.textContent = entry.tag ? `#${entry.tag}` : '';
+  elements.detailTag.hidden = !entry.tag;
+
+  const hasDescription = Boolean(entry.description);
+  elements.detailDescription.textContent = hasDescription
+    ? entry.description
+    : 'Keine Beschreibung hinterlegt.';
+  elements.detailDescription.classList.toggle('detail__description--empty', !hasDescription);
+
+  const links = entry.links.map((value) => [value, safeUrl(value)]).filter(([, url]) => url);
+  elements.detailLinks.replaceChildren(
+    ...links.map(([value, url]) => {
+      const item = document.createElement('li');
+      const anchor = document.createElement('a');
+      anchor.className = 'card__link';
+      anchor.href = url.href;
+      anchor.title = value;
+      anchor.target = '_blank';
+      anchor.rel = 'noopener';
+      anchor.append(createIcon('link'), document.createTextNode(url.hostname));
+      item.append(anchor);
+      return item;
+    })
+  );
+  elements.detailLinks.hidden = links.length === 0;
+
+  const meta = [
+    ['Zieldatum', formatDate(entry.dueDate)],
+    ['Archiviert', formatTimestamp(entry.archivedAt)]
+  ];
+  elements.detailMeta.replaceChildren(
+    ...meta.flatMap(([label, value]) => {
+      const term = document.createElement('dt');
+      term.textContent = label;
+      const definition = document.createElement('dd');
+      definition.textContent = value;
+      return [term, definition];
+    })
+  );
+
+  elements.detailDialog.showModal();
+  elements.detailClose.focus();
 }
 
 async function clearArchive() {
@@ -810,5 +888,6 @@ elements.todoCancel.addEventListener('click', () => elements.todoDialog.close())
 elements.archiveButton.addEventListener('click', openArchive);
 elements.archiveClear.addEventListener('click', clearArchive);
 elements.archiveClose.addEventListener('click', () => elements.archiveDialog.close());
+elements.detailClose.addEventListener('click', () => elements.detailDialog.close());
 void loadBoard();
 connect();
