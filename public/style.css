@@ -90,6 +90,10 @@ body.app {
 
 /* ---------- Buttons ---------- */
 .btn {
+  /* appearance: none, damit Safari nicht seine eigene Button-Darstellung
+     verwendet: Dort fallen gefuellte und umrandete Buttons sonst
+     unterschiedlich hoch aus. */
+  appearance: none; -webkit-appearance: none;
   display: inline-flex; align-items: center; justify-content: center; gap: var(--space-2);
   min-height: 32px; padding: 6px var(--space-3);
   border: 1px solid transparent; border-radius: var(--radius-sm);
@@ -151,7 +155,9 @@ body.app {
 .header__actions { display: flex; align-items: center; gap: var(--space-2); }
 /* Schmal: Buttons nur als Icon, die Beschriftung bleibt fuer Screenreader erhalten. */
 .header .btn__label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
-.header .btn { padding: 6px; min-width: 32px; }
+/* 34px statt 32px: Das Zähler-Badge im Archiv-Button ist 20px hoch und würde
+   ihn sonst höher machen als den Primär-Button daneben. */
+.header .btn { padding: 6px; min-width: 32px; min-height: 34px; }
 
 /* ---------- Status-Tabs (nur schmal) ---------- */
 .tabs {
@@ -339,7 +345,7 @@ dialog.dialog:not([open]) { display: none; }
   .wordmark { font-size: 20px; line-height: 28px; }
   .header { padding: var(--space-3) var(--space-5); }
   .header .btn__label { position: static; width: auto; height: auto; overflow: visible; clip: auto; }
-  .header .btn { padding: 6px var(--space-3); }
+  .header .btn { padding: 6px var(--space-3); min-height: 34px; }
   .tabs { display: none; }
   .board {
     display: flex; gap: var(--space-3); overflow-x: auto;
