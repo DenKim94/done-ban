@@ -5,7 +5,10 @@
 cd "$(dirname "$0")"
 
 REQUIRED_MAJOR=26
-LOG_FILE="start.log"
+# Die Serverausgabe liegt bewusst nicht im Projektordner: Bei einem normalen
+# Start soll dort keine Datei zurueckbleiben. Im Fehlerfall gibt start.sh den
+# Inhalt ohnehin direkt aus.
+LOG_FILE="${TMPDIR:-/tmp}/done-ban-server.log"
 
 fail() {
   echo "$1" >&2

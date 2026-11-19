@@ -1,6 +1,5 @@
 node_modules/
 database/
-start.log
 build/
 todos.db
 todos.db-journal

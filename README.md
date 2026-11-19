@@ -31,7 +31,7 @@ Es gibt drei Startwege:
 
 | Weg | Verhalten |
 |---|---|
-| Doppelklick auf `done-ban.app` | Kein Fenster. Der Server läuft im Hintergrund, die Ausgabe landet in `start.log`. Schlägt der Start fehl, öffnet sich ein Terminal-Fenster mit der Meldung. |
+| Doppelklick auf `done-ban.app` | Kein Fenster, und im Projektordner bleibt nichts zurück. Schlägt der Start fehl, öffnet sich ein Terminal-Fenster mit der Meldung. |
 | Doppelklick auf `start.command` | Terminal-Fenster bleibt offen, der Server läuft darin im Vordergrund. Das Fenster zu schließen beendet auch den Server. |
 | `./start.sh` im Terminal | Wie `start.command`, nur von Hand gestartet. `Strg+C` beendet den Server. |
 
@@ -45,8 +45,10 @@ Nachfrage, sie wird stillschweigend abgewiesen. Der Start über die App schlägt
 `~/Projekte/DoneBan` ist unproblematisch. Über `start.command` und `start.sh` funktioniert der Start
 auch in den geschützten Ordnern, weil Terminal diese Freigabe in der Regel bereits hat.
 
-Jeder Start über die App schreibt nach `~/Library/Logs/done-ban.log`, inklusive des Grundes, falls
-er fehlschlägt. Die Ausgabe des Servers selbst steht in `start.log` im Projektordner.
+Protokolliert wird nur im Fehlerfall: Scheitert der Start über die App, landen Zeitpunkt, `PATH`,
+Projektordner und die Meldung in `~/Library/Logs/done-ban.log`. Ein erfolgreicher Start schreibt
+nichts. Die laufende Serverausgabe steht in `done-ban-server.log` im temporären Ordner des Systems
+(`$TMPDIR`), damit der Projektordner sauber bleibt; den vollständigen Pfad nennt die Startmeldung.
 
 ### Erster Start unter macOS
 
@@ -153,7 +155,6 @@ done-ban/
 ├── scripts/
 │   └── ensure-deps.sh  # prüft und installiert Abhängigkeiten
 ├── public/             # Oberfläche (index.html, style.css, app.js, icon.png)
-├── start.log           # Serverausgabe beim Start per Doppelklick
 └── database/           # wird beim ersten Start angelegt
     └── todos.db        # die SQLite-Datei mit allen To-Dos
 ```
