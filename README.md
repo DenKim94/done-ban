@@ -45,6 +45,19 @@ Nachfrage, sie wird stillschweigend abgewiesen. Der Start über die App schlägt
 `~/Projekte/DoneBan` ist unproblematisch. Über `start.command` und `start.sh` funktioniert der Start
 auch in den geschützten Ordnern, weil Terminal diese Freigabe in der Regel bereits hat.
 
+`done-ban.app` verhält sich wie ein gewöhnliches Programm: Es erscheint in Auswahllisten wie
+„App öffnen" in Kurzbefehle, in der Apps-Übersicht und in Spotlight, und beim Starten blitzt
+kurz ein Dock-Symbol auf, bis der Starter nach etwa einer Sekunde fertig ist. Taucht die App auf
+einem anderen Mac nicht in solchen Listen auf, genügt es meist, sie einmal per Doppelklick zu
+öffnen. Hilft das nicht, lässt sie sich von Hand bei Launch Services anmelden:
+
+```bash
+/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister -f "$HOME/Pfad/zu/done-ban/done-ban.app"
+```
+
+Unabhängig davon funktioniert in Automationen immer die Aktion „Shell-Skript ausführen" mit
+`open "$HOME/Pfad/zu/done-ban/done-ban.app"`, weil `open` das Bündel über den Pfad anspricht.
+
 Protokolliert wird nur im Fehlerfall: Scheitert der Start über die App, landen Zeitpunkt, `PATH`,
 Projektordner und die Meldung in `~/Library/Logs/done-ban.log`. Ein erfolgreicher Start schreibt
 nichts. Die laufende Serverausgabe steht in `done-ban-server.log` im temporären Ordner des Systems
