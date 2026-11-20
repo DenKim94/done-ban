@@ -170,3 +170,4 @@ done-ban/
 | "Die Abhängigkeiten konnten nicht installiert werden." | Keine Internetverbindung beim ersten Start. |
 | "better-sqlite3 lässt sich nicht laden." | Build-Werkzeuge fehlen: macOS `xcode-select --install`, Linux `build-essential`. |
 | Banner "Keine Verbindung zum Server." | Der Server läuft nicht mehr. `start.sh` erneut ausführen. |
+| Nach Doppelklick auf `done-ban.app` öffnet sich doch ein Terminal-Fenster | Der Start über die App ist fehlgeschlagen, das Fenster ist der Ersatzweg. Den Grund nennt `~/Library/Logs/done-ban.log`. Meist findet die App kein passendes Node: Beim Start über den Finder gilt nur ein minimaler `PATH`, was in `~/.zshrc` steht, fehlt dort. `start.sh` sucht deshalb zusätzlich in den üblichen Installationsorten, lädt nvm, fnm, volta und asdf und fragt zuletzt die eigene Shell. Hilft das nicht, Node 26 zum Standard machen: `nvm alias default 26`. |

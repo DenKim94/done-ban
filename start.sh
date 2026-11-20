@@ -16,20 +16,47 @@ fail() {
   exit 1
 }
 
-# Beim Doppelklick fehlen unter Umstaenden Pfade aus der Shell-Konfiguration.
-# nvm wird zusaetzlich geladen, damit die in .nvmrc genannte Version auch dann
-# greift, wenn der nvm-Standard auf eine aeltere Version zeigt.
+# Beim Start ueber den Finder kennt die Shell nur einen minimalen PATH: Was in
+# ~/.zshrc steht, fehlt. Deshalb werden die ueblichen Installationsorte ergaenzt
+# und die gaengigen Versionsverwalter geladen. nvm und fnm werten dabei die
+# .nvmrc aus, sodass Node 26 auch dann greift, wenn der Standard aelter ist.
 load_node() {
-  export PATH="/opt/homebrew/bin:/usr/local/bin:$PATH"
+  export PATH="/opt/homebrew/bin:/usr/local/bin:/opt/local/bin:$HOME/.volta/bin:$HOME/.asdf/shims:$PATH"
+
   if [ -s "$HOME/.nvm/nvm.sh" ]; then
     # shellcheck disable=SC1091
     . "$HOME/.nvm/nvm.sh"
     nvm use >/dev/null 2>&1 || true
   fi
+
+  if command -v fnm >/dev/null 2>&1; then
+    eval "$(fnm env 2>/dev/null)" >/dev/null 2>&1 || true
+    fnm use >/dev/null 2>&1 || true
+  fi
+
+  # Letzter Versuch: die Shell des Nutzers nach ihrem Node fragen. -lc liest
+  # .zprofile, -lic zusaetzlich .zshrc. Uebernommen wird der Fund nur, wenn die
+  # Version passt, damit kein aelteres Node ein neueres verdraengt.
+  if ! node_passt; then
+    for SHELL_ARGS in -lc -lic; do
+      KANDIDAT=$("${SHELL:-/bin/zsh}" "$SHELL_ARGS" 'command -v node' 2>/dev/null | tail -n 1)
+      [ -n "$KANDIDAT" ] && [ -x "$KANDIDAT" ] || continue
+      KANDIDAT_MAJOR=$("$KANDIDAT" -p 'process.versions.node.split(".")[0]' 2>/dev/null || echo "0")
+      if [ "$KANDIDAT_MAJOR" -ge "$REQUIRED_MAJOR" ] 2>/dev/null; then
+        export PATH="$(dirname "$KANDIDAT"):$PATH"
+        break
+      fi
+    done
+  fi
 }
 
 node_major() {
   node -p 'process.versions.node.split(".")[0]' 2>/dev/null || echo "0"
+}
+
+# Ist ein Node in passender Version erreichbar?
+node_passt() {
+  command -v node >/dev/null 2>&1 && [ "$(node_major)" -ge "$REQUIRED_MAJOR" ] 2>/dev/null
 }
 
 if ! command -v node >/dev/null 2>&1; then
@@ -48,7 +75,7 @@ if [ "$MAJOR" -lt "$REQUIRED_MAJOR" ]; then
 fi
 
 if [ "$MAJOR" -lt "$REQUIRED_MAJOR" ]; then
-  echo "Gefunden: Node $MAJOR. Benötigt: Node $REQUIRED_MAJOR oder neuer." >&2
+  echo "Gefunden: Node $MAJOR ($(command -v node)). Benötigt: Node $REQUIRED_MAJOR oder neuer." >&2
   fail "Installieren mit 'nvm install $REQUIRED_MAJOR'. Ist Node $REQUIRED_MAJOR bereits installiert, dauerhaft umstellen mit 'nvm alias default $REQUIRED_MAJOR'."
 fi
 
