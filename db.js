@@ -3,7 +3,14 @@
 import Database from 'better-sqlite3';
 
 /** Die fuenf erlaubten Status-Schluessel in Board-Reihenfolge. */
-export const STATUSES = ['OFFEN', 'IN_ARBEIT', 'ON_HOLD', 'CANCELED', 'DONE'];
+export const STATUSES = ['OPEN', 'IN_PROGRESS', 'DONE', 'ON_HOLD', 'BACKLOG'];
+
+/** Zuordnung der frueheren deutschen Schluessel auf die heutigen. */
+const ALTE_STATUS = {
+  OFFEN: 'OPEN',
+  IN_ARBEIT: 'IN_PROGRESS',
+  CANCELED: 'BACKLOG'
+};
 
 const SCHEMA = `
 CREATE TABLE IF NOT EXISTS todos (
@@ -13,8 +20,8 @@ CREATE TABLE IF NOT EXISTS todos (
   tag         TEXT,
   links       TEXT    NOT NULL DEFAULT '[]',
   due_date    TEXT    NOT NULL,
-  status      TEXT    NOT NULL DEFAULT 'OFFEN'
-              CHECK (status IN ('OFFEN','IN_ARBEIT','ON_HOLD','CANCELED','DONE')),
+  status      TEXT    NOT NULL DEFAULT 'OPEN'
+              CHECK (status IN ('OPEN','IN_PROGRESS','DONE','ON_HOLD','BACKLOG')),
   position    INTEGER NOT NULL DEFAULT 0,
   archived_at TEXT,
   created_at  TEXT    NOT NULL DEFAULT (datetime('now')),
@@ -28,6 +35,7 @@ CREATE INDEX IF NOT EXISTS idx_todos_board ON todos (archived_at, status, positi
  * fuer Eintraege ohne Titel wird die erste Zeile der Beschreibung uebernommen.
  */
 function migrate(db) {
+  migrateStatusKeys(db);
   const columns = db.prepare('PRAGMA table_info(todos)').all().map((column) => column.name);
   if (!columns.includes('title')) {
     db.exec("ALTER TABLE todos ADD COLUMN title TEXT NOT NULL DEFAULT ''");
@@ -42,6 +50,38 @@ function migrate(db) {
       for (const row of ohneTitel) setTitle.run(titleFromDescription(row.description), row.id);
     })();
   }
+}
+
+/**
+ * Stellt eine Datenbank mit den frueheren deutschen Status-Schluesseln um.
+ * SQLite kann eine CHECK-Bedingung nicht aendern, deshalb wird die Tabelle neu
+ * aufgebaut und dabei jede Zeile uebernommen: OFFEN wird OPEN, IN_ARBEIT wird
+ * IN_PROGRESS, CANCELED wird BACKLOG. Positionen und Archiv bleiben erhalten.
+ */
+function migrateStatusKeys(db) {
+  const tabelle = db
+    .prepare("SELECT sql FROM sqlite_master WHERE type = 'table' AND name = 'todos'")
+    .get();
+  if (!tabelle || !tabelle.sql.includes("'OFFEN'")) return;
+
+  const spalten = db
+    .prepare('PRAGMA table_info(todos)')
+    .all()
+    .map((spalte) => spalte.name);
+  const faelle = Object.entries(ALTE_STATUS)
+    .map(([alt, neu]) => `WHEN '${alt}' THEN '${neu}'`)
+    .join(' ');
+  const uebernahme = spalten
+    .map((name) => (name === 'status' ? `CASE status ${faelle} ELSE status END` : name))
+    .join(', ');
+
+  db.transaction(() => {
+    db.exec(SCHEMA.replace('todos (', 'todos_neu (').replace(/CREATE INDEX[^;]+;/, ''));
+    db.exec(`INSERT INTO todos_neu (${spalten.join(', ')}) SELECT ${uebernahme} FROM todos`);
+    db.exec('DROP TABLE todos');
+    db.exec('ALTER TABLE todos_neu RENAME TO todos');
+  })();
+  db.exec(SCHEMA);
 }
 
 /** Leitet einen Titel aus der Beschreibung ab: erste nicht leere Zeile, gekuerzt. */
@@ -148,7 +188,7 @@ export function openDatabase(file) {
   }
 
   const create = db.transaction((input) => {
-    const status = input.status ?? 'OFFEN';
+    const status = input.status ?? STATUSES[0];
     const info = stmt.insert.run(
       input.title,
       input.description,

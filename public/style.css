@@ -16,10 +16,10 @@
   --on-danger: #ffffff;
   --overdue: #cf222e;
   --overlay: rgba(0, 0, 0, 0.4);
-  --st-offen: #6e7781;
-  --st-in-arbeit: #2f6feb;
+  --st-open: #6e7781;
+  --st-in-progress: #2f6feb;
   --st-on-hold: #bf8700;
-  --st-canceled: #8250df;
+  --st-backlog: #8250df;
   --st-done: #1a7f37;
   --st-on-light: #ffffff;
   --st-on-dark: #1f2328;
@@ -143,11 +143,11 @@ body.app {
 .badge--neutral { background: var(--column); color: var(--text); }
 
 /* Status-Zuordnung: setzt --accent und --accent-on fuer alle Kinder. */
-[data-status="OFFEN"]     { --accent: var(--st-offen);     --accent-on: var(--st-on-light); }
-[data-status="IN_ARBEIT"] { --accent: var(--st-in-arbeit); --accent-on: var(--st-on-light); }
-[data-status="ON_HOLD"]   { --accent: var(--st-on-hold);   --accent-on: var(--st-on-dark); }
-[data-status="CANCELED"]  { --accent: var(--st-canceled);  --accent-on: var(--st-on-light); }
-[data-status="DONE"]      { --accent: var(--st-done);      --accent-on: var(--st-on-light); }
+[data-status="OPEN"]        { --accent: var(--st-open);        --accent-on: var(--st-on-light); }
+[data-status="IN_PROGRESS"] { --accent: var(--st-in-progress); --accent-on: var(--st-on-light); }
+[data-status="DONE"]        { --accent: var(--st-done);        --accent-on: var(--st-on-light); }
+[data-status="ON_HOLD"]     { --accent: var(--st-on-hold);     --accent-on: var(--st-on-dark); }
+[data-status="BACKLOG"]     { --accent: var(--st-backlog);     --accent-on: var(--st-on-light); }
 
 /* ---------- Kopfzeile ---------- */
 .header {
@@ -271,7 +271,7 @@ body.app {
 
 .card--overdue { border-left: 3px solid var(--overdue); }
 .card--overdue .card__date { color: var(--overdue); font-weight: 700; }
-.card--done .card__desc, .card--canceled .card__desc { color: var(--muted); }
+.card--done .card__desc, .card--backlog .card__desc { color: var(--muted); }
 .card--done .card__desc .icon { width: 14px; height: 14px; color: var(--st-done); vertical-align: -2px; margin-right: var(--space-1); }
 
 /* ---------- Formularfelder ---------- */

@@ -4,7 +4,8 @@
 ein kleines Node.js-Backend liefert die Oberfläche aus und speichert die Daten in der SQLite-Datei `todos.db`.
 Es gibt keine Cloud, keinen Login und keine externen Ressourcen. Die App funktioniert offline.
 
-Das Board hat fünf Spalten: **Offen, In Arbeit, On Hold, Canceled, Done**.
+Das Board hat fünf Spalten, von links nach rechts: **Open, In Progress, Done, On Hold, Backlog**.
+Done liegt bewusst in der Mitte.
 Karten lassen sich per Drag-and-Drop verschieben und neu sortieren, über Tags filtern und nach dem
 Zieldatum sortieren. Erledigte Karten können archiviert werden.
 
@@ -113,7 +114,7 @@ letzte Browser-Tab geschlossen wird, oder von Hand mit `pkill -f "node server.js
 | Titel | ja | Höchstens 120 Zeichen. Nur der Titel steht auf der Karte. |
 | Beschreibung | ja | Höchstens 1000 Zeichen, Zeilenumbrüche bleiben erhalten. Sichtbar im Bearbeiten-Dialog, als Tooltip der Karte und in der Detailansicht archivierter Einträge. |
 | Zieldatum | ja | Bestimmt die Einsortierung und die Hervorhebung überfälliger Einträge. |
-| Status | – | Neue To-Dos landen immer in Offen, beim Anlegen gibt es deshalb keine Auswahl. Ändern per Drag-and-Drop oder über das Status-Feld im Bearbeiten-Dialog. |
+| Status | – | Neue To-Dos landen immer in Open, beim Anlegen gibt es deshalb keine Auswahl. Ändern per Drag-and-Drop oder über das Status-Feld im Bearbeiten-Dialog. |
 | Tag | nein | Ein einzelnes Schlagwort, zum Beispiel `#Arbeit` oder `#ProjektXY`. Die Raute ist optional, gespeichert wird ohne sie. Erlaubt sind Buchstaben, Ziffern, Bindestrich und Unterstrich, höchstens 32 Zeichen. |
 | Links | nein | Bis zu 20 Stück, `http` oder `https`, einer pro Zeile. |
 
@@ -156,8 +157,10 @@ Der Server lauscht ausschließlich auf `127.0.0.1` und ist damit aus dem Netzwer
 - **Umzug einer älteren Datenbank:** Bis Version 1.0 lag die Datei direkt im Projektordner. Liegt dort
   noch eine `todos.db`, einfach nach `database/todos.db` verschieben, dann sind alle Einträge wieder da.
 - **Ältere Datenbank:** Fehlen die Spalten `title` und `tag`, ergänzt der Server sie beim Start.
-  Bestehende Einträge bekommen als Titel die erste Zeile ihrer Beschreibung. Vorhandene Daten
-  bleiben dabei erhalten.
+  Bestehende Einträge bekommen als Titel die erste Zeile ihrer Beschreibung. Enthält die Datenbank
+  noch die früheren deutschen Status-Schlüssel, werden sie ebenfalls beim Start umgestellt:
+  `OFFEN` wird `OPEN`, `IN_ARBEIT` wird `IN_PROGRESS`, `CANCELED` wird `BACKLOG`. Vorhandene Daten,
+  Reihenfolge und Archiv bleiben dabei erhalten.
 
 ## Projektstruktur
 

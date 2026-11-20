@@ -2,11 +2,11 @@
 
 /** Die Spalten des Boards. Einzige Stelle, an der die Stati im Frontend stehen. */
 const COLUMNS = [
-  { key: 'OFFEN', label: 'Offen' },
-  { key: 'IN_ARBEIT', label: 'In Arbeit' },
+  { key: 'OPEN', label: 'Open' },
+  { key: 'IN_PROGRESS', label: 'In Progress' },
+  { key: 'DONE', label: 'Done' },
   { key: 'ON_HOLD', label: 'On Hold' },
-  { key: 'CANCELED', label: 'Canceled' },
-  { key: 'DONE', label: 'Done' }
+  { key: 'BACKLOG', label: 'Backlog' }
 ];
 
 const TAB_STORAGE_KEY = 'done-ban.activeStatus';
@@ -128,7 +128,7 @@ function formatTimestamp(value) {
 function isOverdue(todo) {
   return (
     todo.status !== 'DONE' &&
-    todo.status !== 'CANCELED' &&
+    todo.status !== 'BACKLOG' &&
     todo.dueDate < todayIso()
   );
 }
@@ -207,7 +207,7 @@ let toastTimer = null;
    dann gaebe es weder einen Wiederverbindungsversuch noch das Verbindungs-Banner. */
 let eventSource = null;
 
-/** Liest den zuletzt gewaehlten Status-Tab, Standard ist OFFEN. */
+/** Liest den zuletzt gewaehlten Status-Tab, Standard ist die erste Spalte. */
 function readActiveStatus() {
   try {
     const stored = localStorage.getItem(TAB_STORAGE_KEY);
@@ -215,7 +215,7 @@ function readActiveStatus() {
   } catch {
     // localStorage kann gesperrt sein, dann gilt der Standard.
   }
-  return 'OFFEN';
+  return COLUMNS[0].key;
 }
 
 // --- Board aufbauen ------------------------------------------------------
@@ -306,7 +306,7 @@ function createCard(todo) {
   const overdue = isOverdue(todo);
   if (overdue) card.classList.add('card--overdue');
   if (todo.status === 'DONE') card.classList.add('card--done');
-  if (todo.status === 'CANCELED') card.classList.add('card--canceled');
+  if (todo.status === 'BACKLOG') card.classList.add('card--backlog');
 
   // Auf der Uebersicht steht nur der Titel, die Beschreibung zeigt der Dialog.
   const title = document.createElement('p');
@@ -638,7 +638,7 @@ function openTodoDialog(id = null) {
   elements.tag.value = todo && todo.tag ? `#${todo.tag}` : '';
   elements.description.value = todo ? todo.description : '';
   elements.dueDate.value = todo ? todo.dueDate : '';
-  elements.status.value = todo ? todo.status : 'OFFEN';
+  elements.status.value = todo ? todo.status : COLUMNS[0].key;
   elements.links.value = todo ? todo.links.join('\n') : '';
   hideFormError();
   elements.todoDialog.showModal();
