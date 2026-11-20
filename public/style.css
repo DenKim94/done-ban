@@ -29,15 +29,19 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
+    /* Staffelung von dunkel nach hell: Seite, Spalte, Karte. Die Karten liegen
+       damit sichtbar ueber ihrer Spalte statt darin zu versinken. */
     --bg: #0d1117;
-    --surface: #161b22;
-    --column: #1c2128;
-    --text: #e6edf3;
-    --muted: #8d96a0;
-    --border: #30363d;
-    --primary: #4c8dff;
-    --primary-text: #0d1117;
-    --danger: #f85149;
+    --surface: #222b38;
+    --column: #161c25;
+    --text: #e8eef6;
+    --muted: #9aa5b2;
+    --border: #3b4654;
+    --primary: #5b9dff;
+    --primary-text: #0b1016;
+    /* Etwas heller als zuvor: Auf der aufgehellten Karte erreicht #f85149
+       nur 4,26:1 und verfehlt damit die geforderten 4,5:1. */
+    --danger: #ff6a61;
     --on-danger: #0d1117;
     --overdue: #ff7b72;
     --overlay: rgba(0, 0, 0, 0.4);
@@ -101,21 +105,24 @@ body.app {
   cursor: pointer; white-space: nowrap;
   transition: background-color 150ms ease-out, border-color 150ms ease-out;
 }
-.btn--primary { background: var(--primary); color: var(--primary-text); }
-.btn--primary:hover { background: color-mix(in srgb, var(--primary) 88%, #000); }
-.btn--primary:active { background: color-mix(in srgb, var(--primary) 78%, #000); }
+.btn--primary { background: var(--primary); color: var(--primary-text); box-shadow: var(--shadow); }
+.btn--primary:hover { background: color-mix(in srgb, var(--primary) 85%, #000); }
+.btn--primary:active { background: color-mix(in srgb, var(--primary) 75%, #000); }
 
 .btn--secondary { background: var(--surface); color: var(--text); border-color: var(--border); }
-.btn--secondary:hover { background: color-mix(in srgb, var(--text) 5%, var(--surface)); border-color: var(--muted); }
-.btn--secondary:active { background: color-mix(in srgb, var(--text) 10%, var(--surface)); }
+.btn--secondary:hover { background: color-mix(in srgb, var(--primary) 10%, var(--surface)); border-color: var(--primary); color: var(--primary); }
+.btn--secondary:active { background: color-mix(in srgb, var(--primary) 18%, var(--surface)); border-color: var(--primary); color: var(--primary); }
 
 .btn--danger { background: transparent; color: var(--danger); border-color: var(--danger); }
-.btn--danger:hover { background: color-mix(in srgb, var(--danger) 8%, transparent); }
-.btn--danger:active { background: color-mix(in srgb, var(--danger) 14%, transparent); }
+.btn--danger:hover { background: color-mix(in srgb, var(--danger) 14%, transparent); }
+.btn--danger:active { background: color-mix(in srgb, var(--danger) 22%, transparent); }
 
-.btn--ghost { background: transparent; color: var(--muted); }
-.btn--ghost:hover { background: color-mix(in srgb, var(--text) 8%, transparent); color: var(--text); }
-.btn--ghost:active { background: color-mix(in srgb, var(--text) 14%, transparent); color: var(--text); }
+/* Ghost-Buttons tragen die Textfarbe, damit sie als Schaltflaeche lesbar sind,
+   und faerben sich beim Benutzen in der Primaerfarbe ein. */
+.btn--ghost { background: transparent; color: var(--text); }
+.btn--ghost:hover { background: color-mix(in srgb, var(--primary) 14%, transparent); color: var(--primary); }
+.btn--ghost:active { background: color-mix(in srgb, var(--primary) 22%, transparent); color: var(--primary); }
+.btn--ghost:focus-visible { color: var(--primary); }
 
 /* Ghost-Variante fuer zerstoerende Aktionen: ruhig auf der Karte, beim Benutzen in --danger. */
 .btn--ghost-danger:hover { background: color-mix(in srgb, var(--danger) 8%, transparent); color: var(--danger); }

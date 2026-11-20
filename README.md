@@ -120,6 +120,9 @@ letzte Browser-Tab geschlossen wird, oder von Hand mit `pkill -f "node server.js
 Überfällige To-Dos werden hervorgehoben. Sind mehrere Tabs geöffnet, aktualisieren sich alle automatisch.
 Beim Löschen und beim Leeren des Archivs erscheint eine Sicherheitsabfrage im Design der Anwendung.
 
+done-ban folgt der Systemeinstellung für Hell- und Dunkelmodus. Im Dunkelmodus sind die Karten
+heller als ihre Spalte, damit sie sichtbar darüber liegen.
+
 Auf schmalen Fenstern (unter 768 Pixel) wird nur eine Spalte angezeigt, die Auswahl erfolgt über
 Status-Tabs. Drag-and-Drop gibt es dort nicht, der Status wird über den Bearbeiten-Dialog geändert.
 
